@@ -1,0 +1,109 @@
+<!-- user_tags.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Tags</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #007bff;
+            text-align: center;
+        }
+
+        .card {
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tokens {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .token {
+            flex: 1 1 calc(33.333% - 10px);
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .token span {
+            margin-right: 10px;
+        }
+
+        .form-control {
+            flex-grow: 1;
+            max-width: 200px;
+        }
+
+        .btn-info, .btn-primary {
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #nextButton:hover, .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .token {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>User Tags for {{ username }}</h1>
+        <form method="post" action="{% url 'view_tags' %}">
+            {% csrf_token %}
+            <input type="hidden" name="username" value="{{ username }}">
+            {% for sentence, tags in grouped_tags.items %}
+                <div class="card">
+                    <div class="card-body">
+                        <p><strong>Sentence:</strong> {{ sentence }}</p>
+                        <div class="tokens">
+                            {% for tag in tags %}
+                                <div class="token">
+                                    <span>{{ tag.word }}</span>
+                                    <label for="tag_{{ tag.word }}" class="sr-only">Tag for {{ tag.word }}</label>
+                                    <select name="tag_{{ tag.word }}" id="tag_{{ tag.word }}" class="form-control">
+                                        <option value="Others" {% if tag.tag == 'Others' %}selected{% endif %}>Others</option>
+                                        {% for option in dropdown_options %}
+                                            <option value="{{ option.option_name }}" {% if tag.tag == option.option_name %}selected{% endif %}>{{ option.option_name }}</option>
+                                        {% endfor %}
+                                    </select>            
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+        </form>
+        <a href="{% url 'view_uploaded_files' %}" class="btn btn-primary mt-3">Back to Files</a>
+    </div>
+</body>
+</html>

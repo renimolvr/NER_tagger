@@ -1,0 +1,117 @@
+<!-- view_sentences.html -->
+
+{% load custom_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Sentences</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f3f4f6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: 30px;
+            color: #007bff;
+            text-align: center;
+        }
+
+        .card {
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tokens {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .token {
+            flex: 1 1 calc(33.333% - 10px);
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .token span {
+            margin-right: 10px;
+        }
+
+        .form-control {
+            flex-grow: 1;
+            max-width: 200px;
+        }
+
+        .btn-info, .btn-primary {
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        #nextButton:hover, .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+        @media (max-width: 768px) {
+            .token {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sentences from {{ file_name }}</h1>
+        <div class="card">
+            <div class="card-body">
+                <p id="sentence">{{ sentence }}</p>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="tokens">
+                {% for token in tokens %}
+                    <div class="token">
+                        <span>{{ token }}</span>
+                        <label for="tag_{{ token }}" class="sr-only">Tag for {{ token }}</label>
+                        <select name="tag_{{ token }}" id="tag_{{ token }}" class="form-control">
+                            <option value="Others" {% if previous_tags|get_key:token == 'Others' %}selected{% endif %}>Others</option>
+                            {% for option in dropdown_options %}
+                                <option value="{{ option.option_name }}" {% if previous_tags|get_key:token == option.option_name %}selected{% endif %}>{{ option.option_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                {% endfor %}
+            </div>
+            <div class="annotation-buttons">
+                <button type="submit" name="save" class="btn btn-info mt-3">Save</button>
+                <button type="submit" name="next" class="btn btn-info mt-3">Next</button>
+                {% if next_index > 1 %}
+                    <a href="{% url 'view_sentences' file_id %}?index={{ next_index|add:'-2' }}" class="btn btn-info mt-3">Previous</a>
+                {% endif %}
+                <a href="{% url 'view_uploaded_files' %}" class="btn btn-primary mt-3">Back to Files</a>
+            </div>
+        </form>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

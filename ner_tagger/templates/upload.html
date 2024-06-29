@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <!-- Add external dependencies -->
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+
+    <style>
+        /* Add your CSS styles here */
+        /* Existing CSS code */
+        @import url('https://fonts.googleapis.com/css?family=Numans');
+
+        body {
+            font-family: 'Numans', sans-serif;
+            background-size: cover;
+            background-repeat: no-repeat;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #dddddd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 800px;
+            height: 500px;
+            display: flex; /* Use flexbox for layout */
+            flex-direction: row;
+        }
+
+        .left-section {
+            flex: 1; /* Take up half of the container width */
+            display: flex;
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            flex-direction: column; /* Align items in a column */
+        }
+
+        .right-section {
+            flex: 1; /* Take up half of the container width */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        input[type="file"] {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            width: calc(100% - 30px);
+            margin: 20px auto;
+            background-color: rgba(249, 249, 249, 0.7);
+            outline: none;
+        }
+
+        input[type="file"]:hover,
+        input[type="file"]:focus {
+            border-color: #FFC312;
+        }
+
+        button[type="submit"] {
+            background-color: #EF6C00;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+
+        button[type="submit"]:hover {
+            background-color: EF6C00;
+        }
+
+        button[type="submit"]:focus {
+            outline: none;
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(2px);
+        }
+
+        .view-files-btn {
+            margin-top: 20px;
+        }
+        .view-files-btn button[type="submit"] {
+            background-color: #EF6C00; /* Blue color */
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-size: 16px;
+        }
+        
+        .view-files-btn button[type="submit"]:hover {
+            background-color: EF6C00;/* Darker shade of blue on hover */
+        }
+
+        .loading {
+            display: none;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-top: 4px solid EF6C00;/* Blue color */
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }        
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="left-section">
+            <label>
+                <i class="fas fa-cloud-upload-alt fa-7x" style="margin: auto;"></i> <!-- Font Awesome file upload icon -->
+            </label>
+        </div>
+        <div class="right-section">
+            <div class="loading" id="loading"></div>
+            <h2>Upload File</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="file" accept=".csv,.txt" required><br><br>
+                <button type="submit">Upload</button>
+            </form>
+            <form action="{% url 'view_uploaded_files' %}" method="get" class="view-files-btn">
+                <button type="submit">View Uploaded Files</button>
+            </form>
+            <form action="{% url 'user_names_action' %}" method="post">
+                {% csrf_token %}
+                <button type="submit">User Names</button>
+            </form>
+        </div>
+    </div>
+</body>
+<script>
+    document.querySelector('form').addEventListener('submit', function() {
+        document.getElementById('loading').style.display = 'block';
+    });
+</script>    
+</html>
